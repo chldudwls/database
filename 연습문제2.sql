@@ -83,4 +83,17 @@ CREATE TABLE `Order`(
     select `custid`, `name`, `hp`, `addr` from `customer` where `name` like '김%';
     select `custid`, `name`, `hp`, `addr` from `customer` where `name` like '__';
     select * from `customer` where `hp` is null;
+<<<<<<< HEAD
     select * from `customer` where `addr` is not null;
+=======
+    select * from `customer` where `addr` is not null;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+>>>>>>> 5a8875c940cd801fdf722a22971c2a7327921fd9

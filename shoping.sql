@@ -342,21 +342,34 @@ group by a.`orderNo`;
 
 #문제6 상품번호, 상품명, 상품가격, 할인율, 할인된가격
 select
-*,
-floor(`prodprice`*(1 - `prodDiscount` / 100)) as `할인가`;
+		*,
+	floor(`prodprice`*(1 - `prodDiscount` / 100)) as `할인가`
+    from `products`;
 
 
 
 #문제7 고소영이 판매하는 모든 상품의 상품번호, 상품명, 상품가격, 재고수량, 판매자이름
 select
-*
+	a.prodNo,
+    a.prodname,
+    a.prodprice,
+    a.prodStock,
+    b.sellermanager
 from `products` as a
-left join  ;
+join  `sellers` as b on a.sellerno = b. sellerno
+where b.sellermanager='고소영';
 
 
 
 #문제8 아직 상품을 판매하지 않은 판매자의 판매자 번호, 판매자상호, 판매자 이름, 판매자 연락처를 조회
-
+select
+		a.sellerNo,
+        a.sellerBizname,
+        a.sellermanager,
+        a.sellerphone
+	from `sellers` as a
+    left join `products` as b on a.sellerNo = b.sellerNo
+    where `prodNo` is null;
 
 
 
@@ -365,21 +378,49 @@ left join  ;
 #문제9 모든 주문상세내역 중 개별 상품 가격과 개수 그리고 할인율이 적용된 가격을 구하고 그 가격으로 주문별 총합을 구해서 
 #			주문별 총합이 10만원 이상 그리고 큰 금액 순으로 주문번호,최종총합을 조회
 select
-`orderNo`,
-sum(`할인가`)as`최종총합`
-from(
-	select
-		*,
-		floor(`prodprice`*(1 - `prodDiscount` / 100)) as `할인가`
-		from `orderitmes`
-        ) a
+	`orderNo` as `주문번호`,
+	sum(`할인가` * `itemcount`) as `최종총합`
+from
+	(select
+			*,
+			floor(`itemprice`-(`itemprice`*(`itemDiscount`/100))) as `할인가`
+	from `orderitems`) as a
 group by `orderNo`
 having `최종총합` >= 100000
 order by `최종총합` desc;
 
+select
+	`orderNo` as `주문번호`,
+	sum(`할인가` * `itemCount`) as `최종총합`
+from
+	(select
+			*,
+			 floor(`itemPrice`-(`itemPrice`*(`itemDiscount`/100))) as `할인가`
+	from `OrderItems`) as a
+group by `orderNo`
+having `최종총합` >=100000
+order by `최종총합` desc;
 
 
 
 
 #문제10 장보고 고객이 주문했던 모든 상품명을 고객명 상품명으로 조회
 # 단 상품명은 중복안됨 상품명은 구분자,로 나열
+
+select 
+	`userName`,
+	group_concat(`prodname` separator',')
+from `orders` 	  as a
+join `users` 	  as b on a.userid = b.userid
+join `orderitems` as c on a.orderno = c.orderno
+join `products`	  as d on d.prodno = c.prodno
+where `username` = '장보고';
+    
+    SELECT 
+	`userName`,
+	GROUP_CONCAT(`prodName` SEPARATOR ',')
+FROM `Orders`	  AS a
+JOIN `Users` 	  AS b ON a.userId = b.userId
+JOIN `OrderItems` AS c ON a.orderNo = c.orderNo
+JOIN `Products`   AS d ON d.prodNo = c.prodNo
+WHERE `userName` = '장보고';

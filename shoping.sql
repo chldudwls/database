@@ -333,7 +333,7 @@ select
     group_concat(`prodname` separator',') as `상품명`,
     `orderDate`
 from `orders` as a
-join `orderitems` as b on a.orderNo = b.orderNO
+join `orderit123ems` as b on a.orderNo = b.orderNO
 join `users` as c on a.userid = c.userid
 join `products` as d on c.prodNo = d.prodNo
 group by a.`orderNo`;
